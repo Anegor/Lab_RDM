@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:lab/screens/register_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 
 import 'home_screen.dart';
 
@@ -16,6 +17,13 @@ class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _passwordController = TextEditingController();
 
   Future<void> _login() async {
+    final connectivityResult = await (Connectivity().checkConnectivity());
+    if (connectivityResult == ConnectivityResult.none) {
+      // Якщо немає інтернету, показуємо діалогове вікно.
+      _showErrorDialog('No Internet connection');
+      return;
+    }
+
     final prefs = await SharedPreferences.getInstance();
     final savedEmail = prefs.getString('email');
     final savedPassword = prefs.getString('password');
@@ -26,10 +34,28 @@ class _LoginScreenState extends State<LoginScreen> {
         MaterialPageRoute(builder: (_) => const HomeScreen()),
       );
     } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Invalid email or password')),
-      );
+      _showErrorDialog('Invalid email or password');
     }
+  }
+
+  void _showErrorDialog(String message) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Login Failed'),
+          content: Text(message),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('OK'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 
   @override
