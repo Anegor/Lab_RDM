@@ -1,29 +1,29 @@
 import 'package:flutter/material.dart';
-import '../widgets/common_button.dart';
 
 class HomeScreen extends StatelessWidget {
+  const HomeScreen({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
+    final List<Map<String, dynamic>> airQualityData = [
+      {'city': 'London', 'quality': 'Moderate', 'aqi': 70},
+      {'city': 'Manchester', 'quality': 'Good', 'aqi': 50},
+      {'city': 'Birmingham', 'quality': 'Poor', 'aqi': 150},
+    ];
+
     return Scaffold(
-      appBar: AppBar(title: Text('Home')),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text('This is your Home Page', style: TextStyle(fontSize: 24)),
-            SizedBox(height: 20),
-            CommonButton(
-              text: 'Profile',
-              onPressed: () => Navigator.pushNamed(context, '/profile'),
+      appBar: AppBar(title: const Text('Air Quality')),
+      body: ListView.builder(
+        itemCount: airQualityData.length,
+        itemBuilder: (context, index) {
+          final data = airQualityData[index];
+          return Card(
+            child: ListTile(
+              title: Text('${data['city']} - AQI: ${data['aqi']}'),
+              subtitle: Text('Quality: ${data['quality']}'),
             ),
-            SizedBox(height: 10),
-            CommonButton(
-              text: 'Logout',
-              onPressed: () => Navigator.pushNamed(context, '/login'),
-            ),
-          ],
-        ),
+          );
+        },
       ),
     );
   }
