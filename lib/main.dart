@@ -50,7 +50,7 @@ class _CounterScreenState extends State<CounterScreen> {
       );
     }
 
-    _controller.clear(); // Очищення поля вводу
+    _controller.clear();
   }
 
   @override
